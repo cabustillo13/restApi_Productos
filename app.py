@@ -62,7 +62,40 @@ def addProduct():
     return jsonify({"mensaje":"Producto agregado correctamente", "products": products})
 
 """Actualizar información"""
+@app.route('/products/<string:product_name>', methods=["PUT"])
+def editProduct(product_name):
+    productFound = [product for product in products if product["nombre"] == product_name]
+    # Validación de los productos encontrados para manejar el error
+    if len(productFound) > 0:
+        productFound[0]["nombre"]= request.json["nombre"]
+        productFound[0]["precio"]= request.json["precio"]
+        productFound[0]["cantidad"]= request.json["cantidad"]
+        return jsonify({
+            "mensaje": "Producto actualizado",
+            "product": productFound[0]
+        })
+    else:
+        return jsonify({
+            "mensaje": "Producto no encontrado"
+        })
 
+"""Eliminar un elemento"""
+@app.route('/products/<string:product_name>', methods=["DELETE"])
+def deleteProduct(product_name):
+    productFound = [product for product in products if product["nombre"] == product_name]
+    # Validación de los productos encontrados para manejar el error
+    if len(productFound) > 0:
+        products.remove(productFound[0])
+        return jsonify({
+            "mensaje": "Producto eliminado",
+            "product": products
+        })
+    else:
+        return jsonify({
+            "mensaje": "Producto no encontrado"
+        })
+    
+    
 # Inicialización
 if __name__ == '__main__':
     # Ejecutar en modo debugger por sí hacemos algún cambio se reinicie
